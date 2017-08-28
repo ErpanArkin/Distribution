@@ -15,18 +15,20 @@ for help
 python distribution -h 
 ```
 
+options:
+
+* -o or --output : for output results to files
+* -p or --plot : for plot the results
+
 ### Prerequisites
 
-python2
-numpy
-matplotlib
-pandas
-tabulate
+* python2
+* numpy
+* matplotlib
+* pandas
+* tabulate
 
-```
-Give examples
-```
 
 ## Authors
 
-* **Erpan Arkin** - *Initial work* - [ErpanArkin](https://github.com/erpanarkin)
+[**ErpanArkin**](https://github.com/erpanarkin)
