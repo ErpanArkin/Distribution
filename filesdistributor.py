@@ -6,12 +6,10 @@ class FilesDistributor:
     def __init__(self, files_filename, nodes_filename):
         """
         Distribute a list of files with different sizes to a list of nodes with different capacities
-        :param files_filename:
-        :param nodes_filename:
         """
         self.files, self.nodes = self.parse_files(files_filename, nodes_filename)
         if self.nodes.empty or self.files.empty:
-            raise RuntimeError("one of the file contents are empty")
+            raise RuntimeError("one of the file contents is empty")
 
     def parse_files(self, files_filename, nodes_filename):
         """
@@ -40,10 +38,9 @@ class FilesDistributor:
         """
         Sort the files and the nodes by size and capacity respectively. First, assign the biggest file
         to the nodes with largest available capacity. Then, reduce the capacity by the
-        size of the file it has been assigned. If the largest files size is bigger
+        size of the file it is assigned. If the largest file size is bigger
         than the largest available node capacity, Mark as NULL. Repeat until all
-        files are allocated or marked as NULL.
-
+        files have been allocated or marked as NULL.
         """
         files = self.files
         nodes = self.nodes
@@ -71,31 +68,43 @@ class FilesDistributor:
 
     def plot_bar(self):
         """
-        plot the usage of each node containing blocks of bar for the files the node has been assigned.
-        :return:
+        plot the usage of each node containing blocks of bars for the files a node has been assigned.
         """
         import matplotlib.pyplot as plt
-        # pivot table files vs nodes with file size as elements
+        fig, ax = plt.subplots(1, 1)
+
+        # pivot table: files vs nodes with file size as elements
         files_nodes = pd.pivot_table(self.files[self.files['AssignedNode'] != 'NULL'], values='size',
                                      index='AssignedNode', columns='files')
         self.nodes.set_index('nodes', inplace=True)
+
         # append space left on each node
         total_fn = pd.concat([files_nodes, self.nodes['space_left']], axis=1)
-        # make stacked bar plot
+
+        # ncol for figsize and number of column in the legend. It will increase accordingly with the number of files
         n_col = int((len(self.files['files']) + 14) / 14)
-        ax = total_fn.plot.bar(figsize=(5 + n_col * 2, 5), stacked=True, title='Files distribution among nodes',
-                               cmap='nipy_spectral_r')
+        n_node = len(self.nodes['capacity'])
+
+        # make stacked bar plot
+        total_fn.plot.bar(ax=ax, figsize=(n_node, 5), stacked=True, title='Files distribution among nodes',
+                          cmap='nipy_spectral_r')
         ax.set_xlabel("Nodes")
         ax.set_ylabel("Capacity")
+
         # make legend for the file names, ncol will increase accordingly with the number of files
-        ax.legend(bbox_to_anchor=(1, 1), loc=2, borderaxespad=0.2, ncol=n_col)
-        plt.tight_layout()
+        ax.legend(bbox_to_anchor=(1, 1), loc=2, ncol=n_col, title='Files')
+
+        plt.tight_layout(rect=(0, 0, 0.5, 1))
+        # to save the figure
+        # plt.savefig('dist.png')
         plt.show()
 
     def print_output(self, out_files):
         from tabulate import tabulate
+        # sort all by the node names
         self.files.set_index('files', inplace=True)
-        self.nodes.sort_values('capacity', inplace=True, ascending=False)
+        self.files.sort_values('AssignedNode', inplace=True)
+        self.nodes.sort_index(inplace=True)
 
         if out_files:
             # output files

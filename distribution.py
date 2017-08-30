@@ -1,4 +1,5 @@
 from optparse import OptionParser
+import sys
 from filesdistributor import FilesDistributor
 
 description = "Distribute a list of files with different sizes to a list of nodes with different capacities"
@@ -13,8 +14,11 @@ parser.add_option("-o", "--output", help="output file name, if not given, output
 parser.add_option("-p", "--plot", help="plot nodes usage",
                   action="store_true", default=False, dest="plot_dist")
 (options, args) = parser.parse_args()
+
+
 if not options.files_filename or not options.nodes_filename:  # if filename is not given
-    parser.error('Check if all the file names are given!')
+    # parser.print_help()
+    parser.error('Check if all the file names are given! {}'.format(parser.print_help()))
 
 distribute = FilesDistributor(options.files_filename, options.nodes_filename)
 
