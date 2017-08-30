@@ -79,7 +79,6 @@ class FilesDistributor:
         # pivot table: files vs nodes with file size as elements
         files_nodes = pd.pivot_table(self.files[self.files['AssignedNode'] != 'NULL'], values='size',
                                      index='AssignedNode', columns='files')
-        self.nodes.set_index('nodes', inplace=True)
 
         # append space left on each node
         total_fn = pd.concat([files_nodes, self.nodes['space_left']], axis=1)
@@ -103,6 +102,7 @@ class FilesDistributor:
         # sort all by the node names
         self.files.set_index('files', inplace=True)
         self.files.sort_values('AssignedNode', inplace=True)
+        self.nodes.set_index('nodes', inplace=True)
         self.nodes.sort_index(inplace=True)
 
         if out_files:
