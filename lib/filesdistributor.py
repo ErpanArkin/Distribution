@@ -7,7 +7,7 @@ class FilesDistributor:
         """
         Distribute a list of files with different sizes to a list of nodes with different capacities
         """
-        self.files, self.nodes = self.parse_files(files_filename, nodes_filename)
+        self.parse_files(files_filename, nodes_filename)
         if self.nodes.empty or self.files.empty:
             raise RuntimeError("one of the file contents is empty")
 
@@ -32,13 +32,14 @@ class FilesDistributor:
         nodes['files'] = nodes['files'].apply(list)
         # make a copy of the total capacity
         nodes['space_left'] = nodes['capacity']
-        return files, nodes
+        self.files = files
+        self.nodes = nodes
 
     def distribute(self):
         """
-        Sort the files and the nodes by size and capacity respectively. First, assign the biggest file
+        First, sort the files and the nodes by size and capacity respectively. Then, assign the biggest file
         to the nodes with largest available capacity. Then, reduce the capacity by the
-        size of the file it is assigned. If the largest file size is bigger
+        size of the file it was assigned. If the largest file size is bigger
         than the largest available node capacity, Mark as NULL. Repeat until all
         files have been allocated or marked as NULL.
         """
@@ -89,7 +90,7 @@ class FilesDistributor:
         ax.set_xlabel("Nodes")
         ax.set_ylabel("Capacity")
 
-        black_patch = mpatches.Patch(color='black', label='Left space')
+        black_patch = mpatches.Patch(color='black', label='space left')
         plt.legend(handles=[black_patch])
 
         plt.tight_layout()
