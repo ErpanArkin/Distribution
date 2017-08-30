@@ -1,6 +1,6 @@
-# Project Title
+# Files Distribution
 
-A postdoc programming challenge: distribute a list of files to a list of nodes.
+A postdoc programming challenge: distribute a list of files to a list of nodes. 
 
 ## Getting Started
 
@@ -22,7 +22,7 @@ options:
 
 ### Prerequisites
 
-* python2
+* python 2.7
 * numpy
 * matplotlib
 * pandas
