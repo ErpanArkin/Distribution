@@ -12,7 +12,7 @@ python distribution.py -f files.txt -n nodes.txt
 for help
 
 ```
-python distribution -h 
+python distribution -h hahaha
 ```
 
 options:
