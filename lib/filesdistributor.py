@@ -34,6 +34,8 @@ class FilesDistributor:
         nodes['space_left'] = nodes['capacity']
         self.files = files
         self.nodes = nodes
+        self.files_counts = len(files)
+        self.nodes_counts = len(nodes)
 
     def distribute(self):
         """
@@ -54,17 +56,16 @@ class FilesDistributor:
                 # iterate for the shorter of two lists
                 if nodes['space_left'].iloc[i] >= rest_files['size'].iloc[i]:  # if there is enough available space
                     # reduce the available space by file size
-                    nodes.set_value(nodes.index[i], 'space_left',
-                                    nodes['space_left'].iloc[i] - rest_files['size'].iloc[i])
+                    nodes.at[nodes.index[i], 'space_left'] = nodes['space_left'].iloc[i] - rest_files['size'].iloc[i]
                     # mark it as allocated
-                    files.set_value(rest_files.index[i], 'notAllocated', False)
+                    files.at[rest_files.index[i], 'notAllocated'] = False
                     # mark which node it was assigned to
-                    files.set_value(rest_files.index[i], 'AssignedNode', nodes['nodes'].iloc[i])
+                    files.at[rest_files.index[i], 'AssignedNode'] = nodes['nodes'].iloc[i]
                     # append which file is assigned to this node
                     nodes['files'].iloc[i].append(rest_files['files'].iloc[i])
                 elif i == 0:  # if there isn't available space on the largest node, mark it as NULL
-                    files.set_value(rest_files.index[i], 'notAllocated', False)
-                    files.set_value(rest_files.index[i], 'AssignedNode', 'NULL')
+                    files.at[rest_files.index[i], 'notAllocated'] =  False
+                    files.at[rest_files.index[i], 'AssignedNode'] = 'NULL'
                     break  # break to resort the node, and repeat.
 
     def plot_bar(self):
@@ -111,5 +112,9 @@ class FilesDistributor:
             # output nodes
             # self.nodes.to_csv('nodes.out',header=False,sep=' ',index=False)
         else:
-            print(tabulate(self.files[['size', 'AssignedNode']], headers='keys', tablefmt='fancy_grid'))
             print(tabulate(self.nodes, headers='keys', tablefmt='fancy_grid'))
+            print(tabulate(self.files[self.files['AssignedNode'] == 'NULL'][['size', 'AssignedNode']], headers='keys', tablefmt='fancy_grid'))
+            utilization = (self.nodes['capacity'].sum()- self.nodes['space_left'].sum()) / self.nodes['capacity'].sum()
+            print('An overall node utilization is {:2.2%},'.format(utilization.mean()))
+            assigned = len(self.files[self.files['AssignedNode'] != 'NULL'])
+            print('with {:2.2%} of files are assigned.'.format(assigned/self.files_counts))

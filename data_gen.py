@@ -15,7 +15,7 @@ args = parser.parse_args()
 
 
 def randomword(length):
-    return ''.join(random.choice(string.uppercase) for _ in range(length))
+    return ''.join(random.choice(string.ascii_uppercase) for _ in range(length))
 
 
 with open(args.output_filename, 'w') as f:
