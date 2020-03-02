@@ -95,7 +95,7 @@ class FilesDistributor:
 
         plt.tight_layout()
         # to save the figure
-        # plt.savefig('dist.png')
+        plt.savefig('dist.png')
         plt.show()
 
     def print_output(self, out_files):
