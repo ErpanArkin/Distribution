@@ -111,5 +111,5 @@ class FilesDistributor:
             # output nodes
             # self.nodes.to_csv('nodes.out',header=False,sep=' ',index=False)
         else:
-            print tabulate(self.files[['size', 'AssignedNode']], headers='keys', tablefmt='fancy_grid')
-            print tabulate(self.nodes, headers='keys', tablefmt='fancy_grid')
+            print(tabulate(self.files[['size', 'AssignedNode']], headers='keys', tablefmt='fancy_grid'))
+            print(tabulate(self.nodes, headers='keys', tablefmt='fancy_grid'))
